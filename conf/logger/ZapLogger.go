@@ -7,6 +7,7 @@ import (
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"org.code4fun/log/conf/global"
 	"org.code4fun/log/utils"
 )
 
@@ -23,15 +24,19 @@ func InitLogger(conf ZapLogConfigs) error {
 	if nil != err {
 		return err
 	}
+	if logFmt := conf.LogFormat; len(logFmt) == 0 {
+		conf.LogFormat = "logfmt"
+	}
 	encoder := getEncoder(conf)
 	level, ok := logLevel[conf.LogLevel]
 	if !ok {
 		level = logLevel["info"]
 	}
+
 	core := zapcore.NewCore(encoder, writeSync, level)
 	logger := zap.New(core, zap.AddCaller())
-
 	zap.ReplaceGlobals(logger)
+	global.Log = logger.Sugar()
 	return nil
 }
 

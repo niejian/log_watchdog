@@ -2,16 +2,18 @@ package logger
 
 import (
 	"errors"
+	"os"
 	"testing"
-	"time"
 
 	"go.uber.org/zap"
+	"org.code4fun/log/conf/global"
+	"org.code4fun/log/utils"
 )
 
 func TestInitLogger(t *testing.T) {
 	conf := ZapLogConfigs{
-		LogLevel:          "debug",    // 输出日志级别 "debug" "info" "warn" "error"
-		LogFormat:         "logfmt",   // 输出日志格式 logfmt, json
+		LogLevel: "debug", // 输出日志级别 "debug" "info" "warn" "error"
+		// LogFormat:         "json",     // 输出日志格式 logfmt, json
 		LogPath:           "./log",    // 输出日志文件位置
 		LogFileName:       "test.log", // 输出日志文件名称
 		LogFileMaxSize:    1,          // 输出单个日志文件大小，单位MB
@@ -26,12 +28,12 @@ func TestInitLogger(t *testing.T) {
 	}
 	zap.S().Infof("测试inifof 用法，%s", "1111")
 	zap.S().Debugf("测试 Debugf 用法：%s", "111") // logger Debugf 用法
-	go func() {
-		for i := 0; i < 100000; i++ {
-			zap.S().Infof("(1)协程内部调用测试 Infof 用法：%s", "111")
-			time.Sleep(time.Millisecond)
-		}
-	}()
+	// go func() {
+	// 	for i := 0; i < 10; i++ {
+	// 		zap.S().Infof("(1)协程内部调用测试 Infof 用法：%s", "111")
+	// 		time.Sleep(time.Millisecond)
+	// 	}
+	// }()
 	zap.S().Errorf("测试 Errorf 用法：%s", "111") // logger Errorf 用法
 	zap.S().Warnf("测试 Warnf 用法：%s", "111")   // logger Warnf 用法
 	zap.S().Infof("测试 Infof 用法：%s, %d, %v, %f", "111", 1111, errors.New("collector returned no data"), 3333.33)
@@ -39,12 +41,18 @@ func TestInitLogger(t *testing.T) {
 	logger := zap.S().With("collector", "cpu", "name", "主机")
 	logger.Infof("测试 (With + Infof) 用法：%s", "测试")
 	zap.S().Errorf("测试 Errorf 用法：%s", "111")
-	go func() {
-		for i := 0; i < 100000; i++ {
-			zap.S().Infof("(2)协程内部调用测试 Infof 用法：%s", "111")
-			time.Sleep(time.Millisecond)
-		}
-	}()
-	time.Sleep(time.Minute)
+	// go func() {
+	// 	for i := 0; i < 10; i++ {
+	// 		zap.S().Infof("(2)协程内部调用测试 Infof 用法：%s", "111")
+	// 		time.Sleep(time.Millisecond)
+	// 	}
+	// }()
+	// time.Sleep(time.Second)
+	// global.Log.Sugar().Infof("global.Log测试 Errorf 用法：%s", "111")
+	global.Log.Infof("global.Log测试 Errorf 用法：%s", "111")
+	global.Log.Errorf("global.Log测试 Errorf 用法：%s", "111")
+	dir, _ := os.Getwd()
+	global.Log.Infof("当前项目路径：%v", dir)
+	global.Log.Infof("当前项目路径：%v", utils.GetCurrentPath())
 
 }
