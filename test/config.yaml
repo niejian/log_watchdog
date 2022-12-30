@@ -1,0 +1,25 @@
+watchdog-config:
+  trace-info:
+    - log-path:  sds
+      to-user-ids: 80468295
+      errs:
+        - exception
+      ignores:
+        - ConnectionException
+    - log-path: sdssds
+      to-user-ids: 80468295
+      errs:
+        - exception
+      ignores:
+        - ConnectionException
+log-file-config:
+  log-level: info    # 日志级别
+  log-format: logfmt # 日志格式 json, logfmt
+  log-path: sd  #         string `mapstructure:"logPath" json:"logPath" yaml:"log-path"`       // 日志保存目录
+  log-file-name: test.log     #     string `mapstructure:"logFileName" json:"logFileName" yaml:"log-file-name"`
+  log-file-max-size: 1    #   int    `mapstructure:"logFileMaxSize" json:"logFileMaxSize" yaml:"log-file-max-size"`          // 【日志分割】单个日志文件最多存储量 单位(mb)
+  log-file-max-backups: 1  #  int    `mapstructure:"logFileMaxBackups" json:"logFileMaxBackups" yaml:"log-file-max-backups"` // 【日志分割】日志备份文件最多数量
+  log-max-age: 1          #  int    `mapstructure:"logMaxAge" json:"logMaxAge" yaml:"log-max-age"`                          // 日志保留时间，单位: 天 (day)
+  log-compress: 1       #   bool   `mapstructure:"logCompress" json:"logCompress" yaml:"log-compress"`                     // 是否压缩日志
+  log-stdout: true          #  bool   `mapstructure:"logStdout" json:"logStdout" yaml:"log-stdout"`                   
+

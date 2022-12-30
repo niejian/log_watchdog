@@ -1,29 +1,42 @@
-package logger
+package test
 
 import (
 	"errors"
+	"io/ioutil"
 	"os"
 	"testing"
 
 	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
+	"org.code4fun/log/conf"
 	"org.code4fun/log/conf/global"
+	"org.code4fun/log/conf/logger"
 	"org.code4fun/log/utils"
 )
 
 func TestInitLogger(t *testing.T) {
-	conf := ZapLogConfigs{
-		LogLevel: "debug", // 输出日志级别 "debug" "info" "warn" "error"
-		// LogFormat:         "json",     // 输出日志格式 logfmt, json
-		LogPath:           "./log",    // 输出日志文件位置
-		LogFileName:       "test.log", // 输出日志文件名称
-		LogFileMaxSize:    1,          // 输出单个日志文件大小，单位MB
-		LogFileMaxBackups: 10,         // 输出最大日志备份个数
-		LogMaxAge:         1,          // 日志保留时间，单位: 天 (day)
-		LogCompress:       false,      // 是否压缩日志
-		LogStdout:         true,       // 是否输出到控制台
+	// zapLogConfigs := logger.ZapLogConfigs{
+	// 	LogLevel: "debug", // 输出日志级别 "debug" "info" "warn" "error"
+	// 	// LogFormat:         "json",     // 输出日志格式 logfmt, json
+	// 	LogPath:           "./log",    // 输出日志文件位置
+	// 	LogFileName:       "test.log", // 输出日志文件名称
+	// 	LogFileMaxSize:    1,          // 输出单个日志文件大小，单位MB
+	// 	LogFileMaxBackups: 10,         // 输出最大日志备份个数
+	// 	LogMaxAge:         1,          // 日志保留时间，单位: 天 (day)
+	// 	LogCompress:       true,       // 是否压缩日志
+	// 	LogStdout:         true,       // 是否输出到控制台
+	// }
+
+	// 读取配置文件
+	yamlData, err := ioutil.ReadFile("config.yaml")
+	if nil != err {
+		t.Fatal(err)
 	}
 
-	if err := InitLogger(conf); err != nil {
+	var configObj conf.BaseConfig
+	err = yaml.Unmarshal(yamlData, &configObj)
+
+	if err := logger.InitLogger(configObj.LogFileConfig); err != nil {
 		t.Fatal(err)
 	}
 	zap.S().Infof("测试inifof 用法，%s", "1111")

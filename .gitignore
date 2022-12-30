@@ -4,4 +4,4 @@ pkg/
 github.com/
 golang.org/
 .vscode/
-conf/logger/log/test.log
+**/test.log
