@@ -6,6 +6,7 @@ type WatchdogConfigs struct {
 }
 
 type TraceInfo struct {
+	AppName   string   `mapstructure:"appName" json:"appName" yaml:"app-name"`
 	LogPath   string   `mapstructure:"logPath" json:"logPath" yaml:"log-path"`
 	ToUserIds string   `mapstructure:"toUserIds" json:"toUserIds" yaml:"to-user-ids"`
 	Errs      []string `mapstructure:"errs" json:"errs" yaml:"errs"`

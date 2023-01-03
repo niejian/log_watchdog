@@ -3,10 +3,13 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"time"
 
+	"github.com/patrickmn/go-cache"
 	"gopkg.in/yaml.v3"
 	"org.code4fun/log/conf/global"
 	"org.code4fun/log/conf/logger"
+	"org.code4fun/log/core"
 )
 
 func init() {
@@ -28,10 +31,32 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 初始化日志
 	global.Log = zapLogger.Sugar()
+	// 初始化本地缓存；过期时间30s，每10清除过期key
+	global.LocalCache = cache.New(30*time.Second, 10*time.Second)
 
 }
 
 func main() {
-	global.Log.Infof("初始化成功。。。。")
+	config := global.BaseConf.WatchdogConfig
+	if !config.Enable {
+		global.Log.Info("已关闭看门狗告警！")
+		return
+	}
+
+	traceInfos := config.TraceInfos
+	if len(traceInfos) == 0 {
+		global.Log.Info("请配置traceInfos项")
+		return
+	}
+	// 阻塞进程
+	done := make(chan bool)
+	for i := 0; i < len(traceInfos); i++ {
+		traceInfo := traceInfos[i]
+		core.TailLog(&traceInfo)
+
+	}
+
+	<-done
 }

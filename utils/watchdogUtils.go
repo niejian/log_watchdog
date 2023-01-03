@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -23,4 +24,11 @@ func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// 字符串中是否含有数字
+func HasDigital(str string) bool {
+	pattern := "\\d{4}"
+	match, _ := regexp.Match(pattern, []byte(str))
+	return match
 }

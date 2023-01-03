@@ -36,7 +36,9 @@ func TestInitLogger(t *testing.T) {
 	var configObj conf.BaseConfig
 	err = yaml.Unmarshal(yamlData, &configObj)
 
-	if err := logger.InitLogger(configObj.LogFileConfig); err != nil {
+	_, err = logger.InitLogger(configObj.LogFileConfig)
+
+	if nil != err {
 		t.Fatal(err)
 	}
 	zap.S().Infof("测试inifof 用法，%s", "1111")
