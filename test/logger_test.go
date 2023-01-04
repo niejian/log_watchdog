@@ -36,6 +36,10 @@ func TestInitLogger(t *testing.T) {
 	var configObj conf.BaseConfig
 	err = yaml.Unmarshal(yamlData, &configObj)
 
+	if nil != err {
+		t.Fatal(err)
+	}
+
 	_, err = logger.InitLogger(configObj.LogFileConfig)
 
 	if nil != err {

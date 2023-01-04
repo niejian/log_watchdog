@@ -32,3 +32,25 @@ func HasDigital(str string) bool {
 	match, _ := regexp.Match(pattern, []byte(str))
 	return match
 }
+
+// 判断字符串是否是日期时间戳开头
+func IsDatePrefix(line string) bool {
+	r := []rune(line)
+	newLine20Prefix := string(r[0:19])
+	pattern := "\\d{4}\\-\\d{2}\\-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}"
+	match, _ := regexp.Match(pattern, []byte(newLine20Prefix))
+	return match
+}
+
+// 判断数组中的元素是否在目标字符串中
+func StrInArr(datas []string, target string) bool {
+	if len(datas) == 0 && len(target) == 0 {
+		return true
+	}
+	for _, data := range datas {
+		if strings.Contains(target, data) {
+			return true
+		}
+	}
+	return false
+}

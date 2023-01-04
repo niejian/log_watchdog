@@ -1,9 +1,17 @@
 package core
 
 import (
+	"strings"
+	"time"
+
 	"github.com/hpcloud/tail"
 	"org.code4fun/log/conf/global"
 	"org.code4fun/log/conf/watchdog"
+	"org.code4fun/log/utils"
+)
+
+var (
+	ErrorTag = "ERROR"
 )
 
 /**
@@ -14,6 +22,45 @@ func TailLog(traceInfo *watchdog.TraceInfo) {
 	if nil != err {
 		global.Log.Errorf("文件：%s 初始化tail失败")
 		return
+	}
+	var errMsg string
+	// 执行类似tail -f 读取行
+	for line := range tailFile.Lines {
+		newLine := line.Text
+		if len(newLine) == 0 {
+			continue
+		}
+
+		// 是否是错误日志行
+		// 错误日志行有以下特点：1. 含有ERROR；2. 以tab开头
+		isErrLine := false
+
+		// 日期开头含有ERROR
+		if utils.IsDatePrefix(newLine) && strings.Contains(newLine, ErrorTag) {
+			isErrLine = true
+		}
+		// tab开头
+		if !utils.IsDatePrefix(newLine) && strings.HasPrefix(newLine, "\t") {
+			isErrLine = true
+		}
+
+		// 判断是否含有关键字
+		errs := traceInfo.Errs
+		ingnores := traceInfo.Ignores
+		if len(errs) == 0 {
+			global.Log.Errorf("应用：%s, 请填写告警异常", traceInfo.AppName)
+			continue
+		}
+		if isErrLine &&
+			utils.StrInArr(errs, newLine) &&
+			!utils.StrInArr(ingnores, newLine) {
+			errMsg += newLine
+		}
+
+		time.AfterFunc(500*time.Millisecond, func() {
+
+		})
+
 	}
 
 }
